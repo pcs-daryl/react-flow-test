@@ -13,6 +13,7 @@ const selector = (store) => ({
   onNodesChange: store.onNodesChange,
   onEdgesChange: store.onEdgesChange,
   addEdge: store.addEdge,
+  onNodesDelete: store.removeNodes,
 });
 
 const nodeTypes = {
@@ -30,6 +31,7 @@ export default function App() {
       edges={store.edges}
       onNodesChange={store.onNodesChange}
       onEdgesChange={store.onEdgesChange}
+      onNodesDelete={store.onNodesDelete}
       onConnect={store.addEdge}
     >
       <Background />

@@ -1,29 +1,32 @@
 import { applyNodeChanges, applyEdgeChanges } from "@xyflow/react";
 import { nanoid } from "nanoid";
 import { createWithEqualityFn } from "zustand/traditional";
+import { updateAudioNode, removeAudioNode } from "./audio";
 
 export const useStore = createWithEqualityFn((set, get) => ({
   nodes: [
     {
-      type: "osc",
       id: "a",
+      type: "osc",
       data: { frequency: 220, type: "square" },
       position: { x: 0, y: 0 },
     },
     {
-      type: "amp",
       id: "b",
+      type: "amp",
       data: { gain: 0.5 },
-      position: { x: 10, y: 0 },
+      position: { x: -100, y: 250 },
     },
-    { id: "c", type: "out", position: { x: 20, y: 100 } },
+    { id: "c", type: "out", position: { x: 100, y: 500 } },
   ],
   edges: [],
 
-  isRunning: false,
+  isRunning: isRunning(),
 
   toggleAudio() {
-    set({ isRunning: !get().isRunning });
+    toggleAudio().then(() => {
+      set({ isRunning: isRunning() });
+    });
   },
 
   onNodesChange(changes) {
@@ -46,10 +49,17 @@ export const useStore = createWithEqualityFn((set, get) => ({
   },
 
   updateNode(id, data) {
+    updateAudioNode(id, data);
     set({
       nodes: get().nodes.map((node) =>
         node.id === id ? { ...node, data: { ...node.data, ...data } } : node
       ),
     });
+  },
+
+  removeNodes(nodes) {
+    for (const { id } of nodes) {
+      removeAudioNode(id);
+    }
   },
 }));
