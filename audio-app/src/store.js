@@ -1,7 +1,15 @@
 import { applyNodeChanges, applyEdgeChanges } from "@xyflow/react";
 import { nanoid } from "nanoid";
 import { createWithEqualityFn } from "zustand/traditional";
-import { updateAudioNode, removeAudioNode } from "./audio";
+
+import {
+  isRunning,
+  toggleAudio,
+  updateAudioNode,
+  removeAudioNode,
+  connect,
+  disconnect,
+} from "./audio";
 
 export const useStore = createWithEqualityFn((set, get) => ({
   nodes: [
@@ -20,7 +28,6 @@ export const useStore = createWithEqualityFn((set, get) => ({
     { id: "c", type: "out", position: { x: 100, y: 500 } },
   ],
   edges: [],
-
   isRunning: isRunning(),
 
   toggleAudio() {
@@ -35,6 +42,23 @@ export const useStore = createWithEqualityFn((set, get) => ({
     });
   },
 
+  updateNode(id, data) {
+    updateAudioNode(id, data);
+    set({
+      nodes: get().nodes.map((node) =>
+        node.id === id
+          ? { ...node, data: Object.assign(node.data, data) }
+          : node
+      ),
+    });
+  },
+
+  onNodesDelete(deleted) {
+    for (const { id } of deleted) {
+      removeAudioNode(id);
+    }
+  },
+
   onEdgesChange(changes) {
     set({
       edges: applyEdgeChanges(changes, get().edges),
@@ -45,21 +69,13 @@ export const useStore = createWithEqualityFn((set, get) => ({
     const id = nanoid(6);
     const edge = { id, ...data };
 
+    connect(edge.source, edge.target);
     set({ edges: [edge, ...get().edges] });
   },
 
-  updateNode(id, data) {
-    updateAudioNode(id, data);
-    set({
-      nodes: get().nodes.map((node) =>
-        node.id === id ? { ...node, data: { ...node.data, ...data } } : node
-      ),
-    });
-  },
-
-  removeNodes(nodes) {
-    for (const { id } of nodes) {
-      removeAudioNode(id);
+  onEdgesDelete(deleted) {
+    for ({ source, target } of deleted) {
+      disconnect(source, target);
     }
   },
 }));

@@ -1,6 +1,8 @@
 const context = new AudioContext();
 const nodes = new Map();
 
+context.suspend();
+
 const osc = context.createOscillator();
 osc.frequency.value = 220;
 osc.type = "square";
@@ -14,6 +16,14 @@ const out = context.destination;
 nodes.set("a", osc);
 nodes.set("b", amp);
 nodes.set("c", out);
+
+export function isRunning() {
+  return context.state === "running";
+}
+
+export function toggleAudio() {
+  return isRunning() ? context.suspend() : context.resume();
+}
 
 export function updateAudioNode(id, data) {
   const node = nodes.get(id);
@@ -36,10 +46,16 @@ export function removeAudioNode(id) {
   nodes.delete(id);
 }
 
-export function isRunning() {
-  return context.state === "running";
+export function connect(sourceId, targetId) {
+  const source = nodes.get(sourceId);
+  const target = nodes.get(targetId);
+
+  source.connect(target);
 }
 
-export function toggleAudio() {
-  return isRunning() ? context.suspend() : context.resume();
+export function disconnect(sourceId, targetId) {
+  const source = nodes.get(sourceId);
+  const target = nodes.get(targetId);
+
+  source.disconnect(target);
 }
