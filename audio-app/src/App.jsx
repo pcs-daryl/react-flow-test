@@ -5,6 +5,7 @@ import { shallow } from "zustand/shallow";
 import { useStore } from "./store";
 import Osc from "./nodes/Osc";
 import Amp from "./nodes/Amp";
+import Out from "./nodes/Out";
 
 const selector = (store) => ({
   nodes: store.nodes,
@@ -17,6 +18,7 @@ const selector = (store) => ({
 const nodeTypes = {
   osc: Osc,
   amp: Amp,
+  out: Out,
 };
 
 export default function App() {

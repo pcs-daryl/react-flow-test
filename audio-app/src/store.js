@@ -16,9 +16,15 @@ export const useStore = createWithEqualityFn((set, get) => ({
       data: { gain: 0.5 },
       position: { x: 10, y: 0 },
     },
-    { id: "c", data: { label: "output" }, position: { x: -50, y: 100 } },
+    { id: "c", type: "out", position: { x: 20, y: 100 } },
   ],
   edges: [],
+
+  isRunning: false,
+
+  toggleAudio() {
+    set({ isRunning: !get().isRunning });
+  },
 
   onNodesChange(changes) {
     set({
