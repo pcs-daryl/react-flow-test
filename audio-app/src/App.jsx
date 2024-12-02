@@ -3,6 +3,8 @@ import { ReactFlow, Background } from "@xyflow/react";
 import { shallow } from "zustand/shallow";
 
 import { useStore } from "./store";
+import Osc from "./nodes/Osc";
+import Amp from "./nodes/Amp";
 
 const selector = (store) => ({
   nodes: store.nodes,
@@ -12,11 +14,17 @@ const selector = (store) => ({
   addEdge: store.addEdge,
 });
 
+const nodeTypes = {
+  osc: Osc,
+  amp: Amp,
+};
+
 export default function App() {
   const store = useStore(selector, shallow);
   return (
     <ReactFlow
       nodes={store.nodes}
+      nodeTypes={nodeTypes}
       edges={store.edges}
       onNodesChange={store.onNodesChange}
       onEdgesChange={store.onEdgesChange}

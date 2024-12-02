@@ -4,8 +4,18 @@ import { createWithEqualityFn } from "zustand/traditional";
 
 export const useStore = createWithEqualityFn((set, get) => ({
   nodes: [
-    { id: "a", data: { label: "oscillator" }, position: { x: 0, y: 0 } },
-    { id: "b", data: { label: "gain" }, position: { x: 50, y: 50 } },
+    {
+      type: "osc",
+      id: "a",
+      data: { frequency: 220, type: "square" },
+      position: { x: 0, y: 0 },
+    },
+    {
+      type: "amp",
+      id: "b",
+      data: { gain: 0.5 },
+      position: { x: 10, y: 0 },
+    },
     { id: "c", data: { label: "output" }, position: { x: -50, y: 100 } },
   ],
   edges: [],
@@ -27,5 +37,13 @@ export const useStore = createWithEqualityFn((set, get) => ({
     const edge = { id, ...data };
 
     set({ edges: [edge, ...get().edges] });
+  },
+
+  updateNode(id, data) {
+    set({
+      nodes: get().nodes.map((node) =>
+        node.id === id ? { ...node, data: { ...node.data, ...data } } : node
+      ),
+    });
   },
 }));
