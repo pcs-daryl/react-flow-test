@@ -59,3 +59,25 @@ export function disconnect(sourceId, targetId) {
 
   source.disconnect(target);
 }
+
+export function createAudioNode(id, type, data) {
+  switch (type) {
+    case "osc": {
+      const node = context.createOscillator();
+      node.frequency.value = data.frequency;
+      node.type = data.type;
+      node.start();
+
+      nodes.set(id, node);
+      break;
+    }
+
+    case "amp": {
+      const node = context.createGain();
+      node.gain.value = data.gain;
+
+      nodes.set(id, node);
+      break;
+    }
+  }
+}

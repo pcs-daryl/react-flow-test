@@ -1,5 +1,5 @@
 import React from "react";
-import { ReactFlow, Background } from "@xyflow/react";
+import { ReactFlow, Panel, Background } from "@xyflow/react";
 import { shallow } from "zustand/shallow";
 
 import { useStore } from "./store";
@@ -14,6 +14,7 @@ const selector = (store) => ({
   onEdgesChange: store.onEdgesChange,
   addEdge: store.addEdge,
   onNodesDelete: store.removeNodes,
+  createNode: store.createNode,
 });
 
 const nodeTypes = {
@@ -34,6 +35,10 @@ export default function App() {
       onNodesDelete={store.onNodesDelete}
       onConnect={store.addEdge}
     >
+      <Panel position="top-right">
+        <button onClick={() => store.createNode("osc")}>osc</button>
+        <button onClick={() => store.createNode("amp")}>amp</button>
+      </Panel>
       <Background />
     </ReactFlow>
   );

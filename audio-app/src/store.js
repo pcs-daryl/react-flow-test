@@ -9,6 +9,7 @@ import {
   removeAudioNode,
   connect,
   disconnect,
+  createAudioNode,
 } from "./audio";
 
 export const useStore = createWithEqualityFn((set, get) => ({
@@ -76,6 +77,32 @@ export const useStore = createWithEqualityFn((set, get) => ({
   onEdgesDelete(deleted) {
     for ({ source, target } of deleted) {
       disconnect(source, target);
+    }
+  },
+
+  createNode(type) {
+    const id = nanoid();
+
+    switch (type) {
+      case "osc": {
+        const data = { frequency: 440, type: "sine" };
+        const position = { x: 0, y: 0 };
+
+        createAudioNode(id, type, data);
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+
+        break;
+      }
+
+      case "amp": {
+        const data = { gain: 0.5 };
+        const position = { x: 0, y: 0 };
+
+        createAudioNode(id, type, data);
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+
+        break;
+      }
     }
   },
 }));
